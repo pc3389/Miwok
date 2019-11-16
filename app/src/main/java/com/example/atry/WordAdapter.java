@@ -5,17 +5,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 
 public class WordAdapter extends ArrayAdapter<Word> {
+    private int mColorResourceId;
 
-    public WordAdapter(Activity context, ArrayList<Word> words){
+    public WordAdapter(Activity context, ArrayList<Word> words,int colorResourceId){
         super(context,0,words);
+        mColorResourceId = colorResourceId;
 
     }
 
@@ -44,6 +48,28 @@ public class WordAdapter extends ArrayAdapter<Word> {
         // Get the version number from the current AndroidFlavor object and
         // set this text on the number TextView
         defaultTextView.setText(currentWord.getDefaultTranslation());
+
+        //Find the ImageView in the list_item.xml layout with the ID image.
+        ImageView imageView = (ImageView) listItemView.findViewById(R.id.image);
+
+        if(currentWord.hasImage()){
+            // set the ImageView to the image resource specified in the current Word
+            imageView.setImageResource(currentWord.getImageResourceId());
+
+            //make sure the image is visible
+            imageView.setVisibility(View.VISIBLE);
+        }
+        else{
+            //Otherwise hide the Imageview
+            imageView.setVisibility(View.GONE);
+        }
+
+        //Set the theme color for the list item
+        View textContainer = listItemView.findViewById(R.id.text_container);
+        //Find the color that the resource ID maps to
+        int color = ContextCompat.getColor(getContext(),mColorResourceId);
+        //Set the background color of the text container View
+        textContainer.setBackgroundColor(color);
 
         // Return the whole list item layout (containing 2 TextViews and an ImageView)
         // so that it can be shown in the ListView
